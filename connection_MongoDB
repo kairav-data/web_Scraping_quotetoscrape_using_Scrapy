@@ -1,0 +1,20 @@
+### use this code in pipeline to connect MongoDB instance 
+
+import pymongo
+import logging
+
+class QuotetoscrapePipeline(object):
+
+    def __init__(self):
+        self.conn = pymongo.MongoClient(
+            "localhost",
+            27017
+        )
+        db = self.conn["mydatabase"]
+        self.collection = db["quotes_tb"]
+        logging.info("MongoDB connection established and collection accessed.")
+
+    def process_item(self, item, spider):
+        self.collection.insert_one(dict(item))
+        logging.info(f"Item inserted into MongoDB: {item}")
+        return item
